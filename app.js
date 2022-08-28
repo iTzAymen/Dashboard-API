@@ -7,7 +7,7 @@ const app = express()
 
 app.use('/api/v1', dataRouter)
 
-const port = 5000
+const port = process.env.PORT
 
 const start = async () => {
     try{
