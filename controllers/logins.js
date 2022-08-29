@@ -13,8 +13,6 @@ const getAllData = async (req, res) => {
 
 const checkAuth = async (req, res) => {
     try {
-        console.log('checking auth')
-        console.log(req.body)
         const {email, password} = req.body
         const login = await Login.findOne({email})
         console.log(login)
@@ -24,7 +22,7 @@ const checkAuth = async (req, res) => {
         if(password !== login.password){
             return res.status(200).json({success: false, msg: 'Wrong password'})
         }
-        res.status(200).json({success: true, data: {...login, password:''}})
+        res.status(200).json({success: true, data: {login}})
     } catch (error) {
         console.log(error)
         res.status(500).json({success: false, msg: error})
@@ -36,7 +34,8 @@ const createAcc = async (req, res) => {
         const {email, username, password} = req.body
         const existing_email = await Login.findOne({email})
         const existing_username = await Login.findOne({username})
-
+        console.log(existing_email)
+        console.log(existing_username)
         if(existing_email){
             return res.status(200).json({success: false, msg: 'Email already exists'})
         }
@@ -45,8 +44,9 @@ const createAcc = async (req, res) => {
             return res.status(200).json({success: false, msg: 'Username already taken'})
         }
 
-        const login = await Login.CreateOne(req.body)
-        res.status(200).json({success: true, data: {...login, password:''}})
+        const login = await Login.create(req.body)
+        console.log(login)
+        res.status(200).json({success: true, data: {login}})
     } catch (error) {
         res.status(500).json({success: false, msg: error})
     }
