@@ -8,6 +8,7 @@ const connectDb = require('./db/connect')
 const app = express()
 
 //app.use(cors());
+app.use(express.urlencoded({extended: false}))
 app.use('/api/v1/transactions', dataRouter)
 app.use('/api/v1/login', loginRouter)
 
