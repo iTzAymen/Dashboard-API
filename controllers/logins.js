@@ -13,8 +13,11 @@ const getAllData = async (req, res) => {
 
 const checkAuth = async (req, res) => {
     try {
+        console.log('checking auth')
+        console.log(req.body)
         const {email, password} = req.body
         const login = await Login.findOne({email})
+        console.log(login)
         if(!login){
             return res.status(200).json({success: false, msg: 'Account does not exist'})
         }
@@ -23,6 +26,7 @@ const checkAuth = async (req, res) => {
         }
         res.status(200).json({success: true, data: {...login, password:''}})
     } catch (error) {
+        console.log(error)
         res.status(500).json({success: false, msg: error})
     }
 }
