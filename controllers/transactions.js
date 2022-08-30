@@ -41,7 +41,7 @@ const getSmallData = async (req, res) => {
             const transactionDate = dateString ? new Date(dateString) : null
             return (transactionDate && transactionDate >= newMinDate)
         })
-        
+        console.log(smallData.length)
         const t = new Date() - d
         console.log(`getSmallData successful after ${t} ms`)
         res.status(200).json({success: true, data: smallData})
