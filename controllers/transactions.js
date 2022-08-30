@@ -34,7 +34,7 @@ const getSmallData = async (req, res) => {
             }
         })
         let newMinDate = maxDate
-        newMinDate.setMonth(newMinDate.getMonth() - 3)
+        newMinDate.setMonth(newMinDate.getMonth() - 1)
         newMinDate = newMinDate < minDate ? minDate : newMinDate
         const smallData = transaction.filter((data) => {
             const dateString = data["DATE DE CREATION"]
