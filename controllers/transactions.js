@@ -52,5 +52,6 @@ const getSmallData = async (req, res) => {
 }
 
 module.exports = {
-    getAllData
+    getAllData,
+    getSmallData
 }
