@@ -1,4 +1,5 @@
 const Transaction = require('../models/Transaction')
+const {StatusCodes} = require('http-status-codes')
 const {BadRequestError, UnauthenticatedError} = require('../errors')
 
 const getAllData = async (req, res) => {
@@ -8,10 +9,10 @@ const getAllData = async (req, res) => {
         const transaction = await Transaction.find({})
         const t = new Date() - d
         console.log(`getAllData successful after ${t} ms`)
-        res.status(200).json({success: true, data: transaction})
+        res.status(StatusCodes.OK).json({success: true, data: transaction})
     } catch (error) {
         console.log(error)
-        res.status(500).json({success: false, msg: error})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({success: false, msg: error})
     }
 }
 
@@ -45,10 +46,10 @@ const getSmallData = async (req, res) => {
         console.log(smallData.length)
         const t = new Date() - d
         console.log(`getSmallData successful after ${t} ms`)
-        res.status(200).json({success: true, data: smallData})
+        res.status(StatusCodes.OK).json({success: true, data: smallData})
     } catch (error) {
         console.log(error)
-        res.status(500).json({success: false, msg: error})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({success: false, msg: error})
     }
 }
 
@@ -63,10 +64,10 @@ const getOnePage = async (req, res) => {
             .limit(10)
         const t = new Date() - d
         console.log(`getOnePage successful after ${t} ms`)
-        res.status(200).json({success: true, data: transaction})
+        res.status(StatusCodes.OK).json({success: true, data: transaction})
     } catch (error) {
         console.log(error)
-        res.status(500).json({success: false, msg: error})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({success: false, msg: error})
     }
 }
 
@@ -131,7 +132,7 @@ const getOverviewData = async (req, res) => {
         refused_count,
         transactions_count
     }
-    res.status(500).json({success: true, data})
+    res.status(StatusCodes.OK).json({success: true, data})
 }
 
 const getDailyData = async (req, res) => {
@@ -218,7 +219,7 @@ const getDailyData = async (req, res) => {
         refused_count,
         transactions_count
     }
-    res.status(500).json({success: true, data})
+    res.status(StatusCodes.OK).json({success: true, data})
 }
 
 module.exports = {
