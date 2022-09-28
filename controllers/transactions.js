@@ -1,4 +1,5 @@
 const Transaction = require('../models/Transaction')
+const {BadRequestError, UnauthenticatedError} = require('../errors')
 
 const getAllData = async (req, res) => {
     console.log('getting data')
@@ -69,8 +70,161 @@ const getOnePage = async (req, res) => {
     }
 }
 
+const getOverviewData = async (req, res) => {
+    const total_count = await Transaction.aggregate([
+        {
+            $count: 'count'
+        }
+    ])
+    const offer_count = await Transaction.aggregate([
+        {
+            $match: {
+                "PRODUIT": { $nin: ['NULL', ''] }
+            }
+        },
+        {
+            $group: {
+                _id: '$PRODUIT',
+                count: {$sum: 1}
+            }
+        }
+    ])
+
+    const city_count = await Transaction.aggregate([
+        {
+            $match: {
+                "WILAYA PDV": { $nin: ['NULL', ''] }
+            }
+        },
+        {
+            $group: {
+                _id: '$WILAYA PDV',
+                count: {$sum: 1}
+            }
+        }
+    ])
+
+    const refused_count = await Transaction.aggregate([
+        {
+            $match: {
+                DESCRIPTION: {$regex: /(reject)/gi}
+            }
+        },
+        {
+            $count: 'count'
+        }
+    ])
+
+    const transactions_count = await Transaction.aggregate([
+        {
+            $group: {
+                _id: {$month: {$dateFromString: { dateString: "$DATE DE DERNIERE MODIFICATION" }}},
+                count: {$sum: 1}
+            }
+        }
+    ])
+    
+    data = {
+        total_count,
+        offer_count,
+        city_count,
+        refused_count,
+        transactions_count
+    }
+    res.status(500).json({success: true, data})
+}
+
+const getDailyData = async (req, res) => {
+    const {date} = req.body
+
+    if(!date){
+        throw new BadRequestError('No date provided')
+    }
+
+    const date_now = new Date(date.split('T')[0])
+    const date_before = new Date(date_now.setDate(date_now.getDate() - 1)).toISOString().split('T')[0]
+    const date_after = new Date(date_now.setDate(date_now.getDate() + 1)).toISOString().split('T')[0]
+
+    const total_count = await Transaction.aggregate([
+        {
+            $match: {
+                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after }
+            }
+        },
+        {
+            $count: 'count'
+        }
+    ])
+    const offer_count = await Transaction.aggregate([
+        {
+            $match: {
+                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after },
+                "PRODUIT": { $nin: ['NULL', ''] }
+            }
+        },
+        {
+            $group: {
+                _id: '$PRODUIT',
+                count: {$sum: 1}
+            }
+        }
+    ])
+
+    const city_count = await Transaction.aggregate([
+        {
+            $match: {
+                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after },
+                "WILAYA PDV": { $nin: ['NULL', ''] }
+            }
+        },
+        {
+            $group: {
+                _id: '$WILAYA PDV',
+                count: {$sum: 1}
+            }
+        }
+    ])
+    
+    const refused_count = await Transaction.aggregate([
+        {
+            $match: {
+                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after },
+                "DESCRIPTION": {$regex: /(reject)/gi}
+            }
+        },
+        {
+            $count: 'count'
+        }
+    ])
+
+    const transactions_count = await Transaction.aggregate([
+        {
+            $match: {
+                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after },
+            }
+        },
+        {
+            $group: {
+                _id: {$hour: {$dateFromString: { dateString: "$DATE DE DERNIERE MODIFICATION" }}},
+                count: {$sum: 1}
+            }
+        }
+    ])
+
+    data = {
+        total_count,
+        offer_count,
+        city_count,
+        refused_count,
+        transactions_count
+    }
+    res.status(500).json({success: true, data})
+}
+
 module.exports = {
     getAllData,
     getSmallData,
-    getOnePage
+    getOnePage,
+    getOverviewData,
+    getDailyData
 }
