@@ -267,7 +267,7 @@ const validateDate = async (req, res) => {
 
     const valid = _date <= _date_max && _date >= _date_min
 
-    const data = {valid}
+    const data = {valid, min: _date_min, max: _date_max}
     
     res.status(StatusCodes.OK).json({success: true, data})
 }
