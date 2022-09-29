@@ -20,6 +20,6 @@ router.route('/overview')
     .get(getOverviewData)
 
 router.route('/daily')
-    .get(getDailyData)
+    .post(getDailyData)
 
 module.exports = router
