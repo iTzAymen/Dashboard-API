@@ -5,7 +5,9 @@ const {
     getSmallData, 
     getOnePage, 
     getOverviewData,
-    getDailyData} = require('../controllers/transactions')
+    getDailyData,
+    validateDate
+} = require('../controllers/transactions')
 
 router.route('/')
     .get(getAllData)
@@ -21,5 +23,8 @@ router.route('/overview')
 
 router.route('/daily')
     .post(getDailyData)
+
+router.route('/validate')
+    .post(validateDate)
 
 module.exports = router

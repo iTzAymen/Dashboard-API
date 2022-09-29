@@ -201,7 +201,7 @@ const getDailyData = async (req, res) => {
     const transactions_count = await Transaction.aggregate([
         {
             $match: {
-                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after },
+                "DATE DE DERNIERE MODIFICATION": { $gt : date_before, $lt: date_after }
             }
         },
         {
@@ -222,10 +222,61 @@ const getDailyData = async (req, res) => {
     res.status(StatusCodes.OK).json({success: true, data})
 }
 
+const validateDate = async (req, res) => {
+    const {date} = req.body
+
+    if(!date){
+        throw new BadRequestError('No date provided')
+    }
+
+    const date_max = await Transaction.aggregate([
+        {
+            $sort: {
+                "DATE DE DERNIERE MODIFICATION": -1,
+            }
+        },
+        {
+            $limit: 1
+        },
+        {
+            $project: {
+                date: '$DATE DE DERNIERE MODIFICATION'
+            }
+        }
+    ])
+
+    const date_min = await Transaction.aggregate([
+        {
+            $sort: {
+                "DATE DE DERNIERE MODIFICATION": 1,
+            }
+        },
+        {
+            $limit: 1
+        },
+        {
+            $project: {
+                date: '$DATE DE DERNIERE MODIFICATION'
+            }
+        }
+    ])
+
+    const _date_min = new Date(date_min[0].date)
+    const _date_max = new Date(date_max[0].date)
+    const _date = new Date(date)
+
+    const valid = _date <= _date_max && _date >= _date_min
+
+    const data = {valid}
+    
+    res.status(StatusCodes.OK).json({success: true, data})
+}
+
 module.exports = {
     getAllData,
     getSmallData,
     getOnePage,
     getOverviewData,
-    getDailyData
+    getDailyData,
+    validateDate
 }
