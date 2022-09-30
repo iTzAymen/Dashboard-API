@@ -77,6 +77,25 @@ const getOnePage = async (req, res) => {
   }
 };
 
+const searchByID = async (req, res) => {
+  const { id } = req.query;
+  console.log(`searching by ID ${id}`);
+
+  if (!id) {
+    throw new BadRequestError("no id provided");
+  }
+
+  const d = new Date();
+  const transaction = await Transaction.find({
+    "IDENTIFIANT DE TRANSACTION": { $regex: id },
+  })
+    .sort({ "DATE DE DERNIERE MODIFICATION": -1 })
+    .limit(10);
+  const t = new Date() - d;
+  console.log(`searchByID successful after ${t} ms`);
+  res.status(StatusCodes.OK).json({ success: true, data: transaction });
+};
+
 const getOverviewData = async (req, res) => {
   const total_count = await Transaction.aggregate([
     {
@@ -329,4 +348,5 @@ module.exports = {
   getOverviewData,
   getDailyData,
   validateDate,
+  searchByID,
 };
