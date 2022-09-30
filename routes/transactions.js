@@ -10,7 +10,7 @@ const {
   searchByID,
 } = require("../controllers/transactions");
 
-router.route("/").post(searchByID);
+router.route("/").get(searchByID);
 
 router.route("/page/:page").get(getOnePage);
 
