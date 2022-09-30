@@ -8,7 +8,10 @@ const register = async (req, res) => {
   const token = user.createJWT();
   res
     .status(StatusCodes.CREATED)
-    .json({ user: { _id: user._id, name: user.name }, token });
+    .json({
+      user: { _id: user._id, email: user.email, name: user.name },
+      token,
+    });
 };
 
 const login = async (req, res) => {
@@ -31,7 +34,10 @@ const login = async (req, res) => {
   const token = user.createJWT();
   res
     .status(StatusCodes.OK)
-    .json({ user: { _id: user._id, name: user.name }, token });
+    .json({
+      user: { _id: user._id, email: user.email, name: user.name },
+      token,
+    });
 };
 
 const resetPassword = async (req, res) => {
@@ -61,7 +67,10 @@ const resetPassword = async (req, res) => {
   const token = user_new.createJWT();
   res
     .status(StatusCodes.OK)
-    .json({ user: { _id: user._id, name: user.name }, token });
+    .json({
+      user: { _id: user._id, email: user.email, name: user.name },
+      token,
+    });
 };
 
 const changeUsername = async (req, res) => {
@@ -92,7 +101,10 @@ const changeUsername = async (req, res) => {
   const token = user_new.createJWT();
   res
     .status(StatusCodes.OK)
-    .json({ user: { _id: user._id, name: user.name }, token });
+    .json({
+      user: { _id: user._id, email: user.email, name: user.name },
+      token,
+    });
 };
 
 module.exports = {
