@@ -6,7 +6,9 @@ const { BadRequestError, UnauthenticatedError } = require("../errors");
 const register = async (req, res) => {
   const user = await User.create({ ...req.body });
   const token = user.createJWT();
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ user: { _id: user._id, name: user.name }, token });
 };
 
 const login = async (req, res) => {
@@ -27,7 +29,9 @@ const login = async (req, res) => {
   }
 
   const token = user.createJWT();
-  res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+  res
+    .status(StatusCodes.OK)
+    .json({ user: { _id: user._id, name: user.name }, token });
 };
 
 const resetPassword = async (req, res) => {
@@ -55,7 +59,9 @@ const resetPassword = async (req, res) => {
   );
 
   const token = user_new.createJWT();
-  res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+  res
+    .status(StatusCodes.OK)
+    .json({ user: { _id: user._id, name: user.name }, token });
 };
 
 const changeUsername = async (req, res) => {
@@ -84,7 +90,9 @@ const changeUsername = async (req, res) => {
   );
 
   const token = user_new.createJWT();
-  res.status(StatusCodes.OK).json({ user: { name: user_new.name }, token });
+  res
+    .status(StatusCodes.OK)
+    .json({ user: { _id: user._id, name: user.name }, token });
 };
 
 module.exports = {
