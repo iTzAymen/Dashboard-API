@@ -93,9 +93,10 @@ const changeUsername = async (req, res) => {
     { new: true }
   );
 
+  console.log(user_new);
   const token = user_new.createJWT();
   res.status(StatusCodes.OK).json({
-    user: { _id: user._id, email: user.email, name: user.name },
+    user: { _id: user._id, email: user.email, name: user_new.name },
     token,
   });
 };
