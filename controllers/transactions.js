@@ -174,18 +174,12 @@ const getDailyData = async (req, res) => {
     throw new BadRequestError("No date provided");
   }
 
-  const date_now = new Date(date.split("T")[0]);
-  const date_before = new Date(date_now.setDate(date_now.getDate() - 1))
-    .toISOString()
-    .split("T")[0];
-  const date_after = new Date(date_now.setDate(date_now.getDate() + 1))
-    .toISOString()
-    .split("T")[0];
+  const date_now = date.split("T")[0];
 
   const total_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $gt: date_before, $lt: date_after },
+        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
       },
     },
     {
@@ -195,7 +189,7 @@ const getDailyData = async (req, res) => {
   const offer_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $gt: date_before, $lt: date_after },
+        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
         PRODUIT: { $nin: ["NULL", ""] },
       },
     },
@@ -218,7 +212,7 @@ const getDailyData = async (req, res) => {
   const city_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $gt: date_before, $lt: date_after },
+        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
         "WILAYA PDV": { $nin: ["NULL", ""] },
       },
     },
@@ -241,7 +235,7 @@ const getDailyData = async (req, res) => {
   const refused_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $gt: date_before, $lt: date_after },
+        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
         DESCRIPTION: { $regex: /(reject)/gi },
       },
     },
@@ -253,7 +247,7 @@ const getDailyData = async (req, res) => {
   const transactions_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $gt: date_before, $lt: date_after },
+        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
       },
     },
     {
