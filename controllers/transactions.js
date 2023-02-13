@@ -128,9 +128,9 @@ const getOverviewData = async (req, res) => {
         count: -1,
       },
     },
-    {
-      $limit: 6,
-    },
+    // {
+    //   $limit: 6,
+    // },
   ]);
 
   const refused_count = await Transaction.aggregate([
@@ -149,7 +149,10 @@ const getOverviewData = async (req, res) => {
       $group: {
         _id: {
           $month: {
-            $dateFromString: { dateString: "$DATE_DE_DERNIERE_MODIFICATION" },
+            $dateFromString: {
+              dateString: "$DATE_DERNIERE_MODIFICATION",
+              format: "%d/%m/%Y %H:%M:%S",
+            },
           },
         },
         count: { $sum: 1 },
