@@ -56,7 +56,7 @@ const getOnePage = async (req, res) => {
   const transaction = await Transaction.find({
     "IDENTIFIANT DE TRANSACTION": { $regex: id },
   })
-    .sort({ "DATE DE DERNIERE MODIFICATION": -1 })
+    .sort({ DATE_DE_DERNIERE_MODIFICATION: -1 })
     .skip(page * 10)
     .limit(10);
   const t = new Date() - d;
@@ -76,7 +76,7 @@ const searchByID = async (req, res) => {
   const transaction = await Transaction.find({
     "IDENTIFIANT DE TRANSACTION": { $regex: id },
   })
-    .sort({ "DATE DE DERNIERE MODIFICATION": -1 })
+    .sort({ DATE_DE_DERNIERE_MODIFICATION: -1 })
     .limit(10);
   const t = new Date() - d;
   console.log(`searchByID successful after ${t} ms`);
@@ -114,12 +114,12 @@ const getOverviewData = async (req, res) => {
   const city_count = await Transaction.aggregate([
     {
       $match: {
-        "WILAYA PDV": { $nin: ["NULL", ""] },
+        WILAYA_PDV: { $nin: ["NULL", ""] },
       },
     },
     {
       $group: {
-        _id: "$WILAYA PDV",
+        _id: "$WILAYA_PDV",
         count: { $sum: 1 },
       },
     },
@@ -149,7 +149,7 @@ const getOverviewData = async (req, res) => {
       $group: {
         _id: {
           $month: {
-            $dateFromString: { dateString: "$DATE DE DERNIERE MODIFICATION" },
+            $dateFromString: { dateString: "$DATE_DE_DERNIERE_MODIFICATION" },
           },
         },
         count: { $sum: 1 },
@@ -179,7 +179,7 @@ const getDailyData = async (req, res) => {
   const total_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
+        DATE_DE_DERNIERE_MODIFICATION: { $regex: new RegExp(date_now, "gi") },
       },
     },
     {
@@ -189,7 +189,7 @@ const getDailyData = async (req, res) => {
   const offer_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
+        DATE_DE_DERNIERE_MODIFICATION: { $regex: new RegExp(date_now, "gi") },
         PRODUIT: { $nin: ["NULL", ""] },
       },
     },
@@ -212,13 +212,13 @@ const getDailyData = async (req, res) => {
   const city_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
-        "WILAYA PDV": { $nin: ["NULL", ""] },
+        DATE_DE_DERNIERE_MODIFICATION: { $regex: new RegExp(date_now, "gi") },
+        WILAYA_PDV: { $nin: ["NULL", ""] },
       },
     },
     {
       $group: {
-        _id: "$WILAYA PDV",
+        _id: "$WILAYA_PDV",
         count: { $sum: 1 },
       },
     },
@@ -235,7 +235,7 @@ const getDailyData = async (req, res) => {
   const refused_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
+        DATE_DE_DERNIERE_MODIFICATION: { $regex: new RegExp(date_now, "gi") },
         DESCRIPTION: { $regex: /(reject)/gi },
       },
     },
@@ -247,14 +247,14 @@ const getDailyData = async (req, res) => {
   const transactions_count = await Transaction.aggregate([
     {
       $match: {
-        "DATE DE DERNIERE MODIFICATION": { $regex: new RegExp(date_now, "gi") },
+        DATE_DE_DERNIERE_MODIFICATION: { $regex: new RegExp(date_now, "gi") },
       },
     },
     {
       $group: {
         _id: {
           $hour: {
-            $dateFromString: { dateString: "$DATE DE DERNIERE MODIFICATION" },
+            $dateFromString: { dateString: "$DATE_DE_DERNIERE_MODIFICATION" },
           },
         },
         count: { $sum: 1 },
@@ -282,7 +282,7 @@ const validateDate = async (req, res) => {
   const date_max = await Transaction.aggregate([
     {
       $sort: {
-        "DATE DE DERNIERE MODIFICATION": -1,
+        DATE_DE_DERNIERE_MODIFICATION: -1,
       },
     },
     {
@@ -290,7 +290,7 @@ const validateDate = async (req, res) => {
     },
     {
       $project: {
-        date: "$DATE DE DERNIERE MODIFICATION",
+        date: "$DATE_DE_DERNIERE_MODIFICATION",
       },
     },
   ]);
@@ -298,7 +298,7 @@ const validateDate = async (req, res) => {
   const date_min = await Transaction.aggregate([
     {
       $sort: {
-        "DATE DE DERNIERE MODIFICATION": 1,
+        DATE_DE_DERNIERE_MODIFICATION: 1,
       },
     },
     {
@@ -306,7 +306,7 @@ const validateDate = async (req, res) => {
     },
     {
       $project: {
-        date: "$DATE DE DERNIERE MODIFICATION",
+        date: "$DATE_DE_DERNIERE_MODIFICATION",
       },
     },
   ]);
